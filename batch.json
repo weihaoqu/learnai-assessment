@@ -1,0 +1,68 @@
+{
+  "jobs": 4,
+  "tasks": [
+    {
+      "id": "hero-welcome",
+      "promptFiles": ["prompts/hero-welcome.md"],
+      "image": "images/hero-welcome.png",
+      "ar": "16:9",
+      "quality": "2k"
+    },
+    {
+      "id": "hero-pretest",
+      "promptFiles": ["prompts/hero-pretest.md"],
+      "image": "images/hero-pretest.png",
+      "ar": "16:9",
+      "quality": "2k"
+    },
+    {
+      "id": "hero-posttest",
+      "promptFiles": ["prompts/hero-posttest.md"],
+      "image": "images/hero-posttest.png",
+      "ar": "16:9",
+      "quality": "2k"
+    },
+    {
+      "id": "icon-problem-framing",
+      "promptFiles": ["prompts/icon-problem-framing.md"],
+      "image": "images/icon-problem-framing.png",
+      "ar": "1:1",
+      "quality": "2k"
+    },
+    {
+      "id": "icon-tool-mapping",
+      "promptFiles": ["prompts/icon-tool-mapping.md"],
+      "image": "images/icon-tool-mapping.png",
+      "ar": "1:1",
+      "quality": "2k"
+    },
+    {
+      "id": "icon-prompt-quality",
+      "promptFiles": ["prompts/icon-prompt-quality.md"],
+      "image": "images/icon-prompt-quality.png",
+      "ar": "1:1",
+      "quality": "2k"
+    },
+    {
+      "id": "icon-verification",
+      "promptFiles": ["prompts/icon-verification.md"],
+      "image": "images/icon-verification.png",
+      "ar": "1:1",
+      "quality": "2k"
+    },
+    {
+      "id": "paper-assessment-flow",
+      "promptFiles": ["prompts/paper-assessment-flow.md"],
+      "image": "images/paper-assessment-flow.png",
+      "ar": "16:9",
+      "quality": "2k"
+    },
+    {
+      "id": "paper-scoring-rubric",
+      "promptFiles": ["prompts/paper-scoring-rubric.md"],
+      "image": "images/paper-scoring-rubric.png",
+      "ar": "16:9",
+      "quality": "2k"
+    }
+  ]
+}

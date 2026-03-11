@@ -1,0 +1,15 @@
+{
+  "jobs": 4,
+  "tasks": [
+    { "id": "s01", "promptFiles": ["prompts/scenarios/s01-starting-point.md"], "image": "images/scenarios/s01-starting-point.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s02", "promptFiles": ["prompts/scenarios/s02-unclear-request.md"], "image": "images/scenarios/s02-unclear-request.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s03", "promptFiles": ["prompts/scenarios/s03-right-tool.md"], "image": "images/scenarios/s03-right-tool.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s04", "promptFiles": ["prompts/scenarios/s04-locked-down.md"], "image": "images/scenarios/s04-locked-down.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s05", "promptFiles": ["prompts/scenarios/s05-prompt-upgrade.md"], "image": "images/scenarios/s05-prompt-upgrade.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s06", "promptFiles": ["prompts/scenarios/s06-conversation.md"], "image": "images/scenarios/s06-conversation.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s07", "promptFiles": ["prompts/scenarios/s07-trust-verify.md"], "image": "images/scenarios/s07-trust-verify.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s08", "promptFiles": ["prompts/scenarios/s08-hallucination.md"], "image": "images/scenarios/s08-hallucination.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s09", "promptFiles": ["prompts/scenarios/s09-independence.md"], "image": "images/scenarios/s09-independence.png", "ar": "16:9", "quality": "2k" },
+    { "id": "s10", "promptFiles": ["prompts/scenarios/s10-role-of-ai.md"], "image": "images/scenarios/s10-role-of-ai.png", "ar": "16:9", "quality": "2k" }
+  ]
+}

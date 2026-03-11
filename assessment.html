@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LearnAI Assessment</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #0EA5E9;
+  --primary-dark: #0284C7;
+  --teal: #14B8A6;
+  --accent: #F59E0B;
+  --accent-light: #FEF3C7;
+  --success: #22C55E;
+  --success-light: #DCFCE7;
+  --error: #EF4444;
+  --error-light: #FEE2E2;
+  --bg: #F0F9FF;
+  --card: #FFFFFF;
+  --text: #1E293B;
+  --text-light: #64748B;
+  --border: #E2E8F0;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.3s ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header / Progress */
+.header {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.header-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.header-title h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.header-title .step-label {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--teal));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* Screens */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  animation: fadeIn 0.35s ease;
+}
+
+.screen.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+/* Welcome Screen */
+.welcome-hero {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.welcome-hero h2 {
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.welcome-hero p {
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color var(--transition);
+  background: var(--card);
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748B' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 4 3.5-4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+  min-height: 48px;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  color: white;
+  box-shadow: 0 2px 8px rgba(14,165,233,0.3);
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14,165,233,0.4); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: var(--card);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-block { width: 100%; }
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-row .btn { flex: 1; }
+
+/* Question Instruction */
+.q-instruction {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.q-skill-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.badge-framing { background: #DBEAFE; color: #1D4ED8; }
+.badge-tools { background: #F3E8FF; color: #7C3AED; }
+.badge-prompt { background: #FEF3C7; color: #D97706; }
+.badge-verify { background: #FCE7F3; color: #DB2777; }
+
+/* Matching Q1/Q2 */
+.match-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.match-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.match-left {
+  flex: 1;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.match-left .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.match-left.selected {
+  border-color: var(--primary);
+  background: rgba(14,165,233,0.05);
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+}
+
+.match-drop {
+  flex: 1.2;
+  min-height: 48px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  color: var(--text-light);
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+
+.match-drop.has-match {
+  border-style: solid;
+  border-color: var(--teal);
+  background: rgba(20,184,166,0.05);
+  color: var(--text);
+}
+
+.match-drop .match-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.match-drop .clear-match {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--error-light);
+  color: var(--error);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.match-drop.has-match .clear-match { opacity: 1; }
+
+/* Right column pool */
+.match-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 2px dashed var(--border);
+}
+
+.match-pool-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 2px;
+}
+
+.pool-item {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.pool-item:hover { border-color: var(--teal); }
+
+.pool-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+}
+
+.pool-item.used {
+  opacity: 0.35;
+  pointer-events: none;
+  text-decoration: line-through;
+}
+
+.pool-item .letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Sorting Q3 */
+.sort-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sort-item {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  transition: all var(--transition);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sort-item.dragging {
+  opacity: 0.5;
+  border-color: var(--primary);
+}
+
+.sort-item.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.sort-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sort-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sort-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.sort-arrows button {
+  width: 32px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.sort-arrows button:hover { background: var(--bg); color: var(--text); }
+.sort-arrows button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.sort-label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sort-label-row .weak { color: var(--error); }
+.sort-label-row .strong { color: var(--success); }
+
+/* Categorize Q4 */
+.zone-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.zone {
+  border-radius: var(--radius);
+  padding: 12px;
+  min-height: 60px;
+}
+
+.zone-good { background: rgba(34,197,94,0.08); border: 2px dashed var(--success); }
+.zone-bad { background: rgba(239,68,68,0.08); border: 2px dashed var(--error); }
+
+.zone-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zone-good .zone-title { color: var(--success); }
+.zone-bad .zone-title { color: var(--error); }
+
+.zone-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 30px;
+}
+
+.cat-item {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all var(--transition);
+  min-height: 48px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cat-item:hover { border-color: var(--primary); }
+
+.cat-item .cat-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.zone-good .cat-item .cat-num { background: var(--success-light); color: var(--success); }
+.zone-bad .cat-item .cat-num { background: var(--error-light); color: var(--error); }
+
+.cat-item .toggle-hint {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-light);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Unsorted pool for Q4 */
+.cat-pool {
+  margin-top: 12px;
+}
+
+.cat-pool-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+
+/* Results screen */
+.results-hero {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 20px rgba(14,165,233,0.3);
+  animation: popIn 0.6s ease;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.score-circle .score-num {
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+}
+
+.score-circle .score-of {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+}
+
+.score-label {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.label-novice { color: var(--error); }
+.label-developing { color: var(--accent); }
+.label-proficient { color: var(--primary); }
+.label-expert { color: var(--success); }
+
+/* Skill bars */
+.skill-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skill-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.skill-row-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.skill-bar-bg {
+  height: 12px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1s ease;
+  width: 0;
+}
+
+.fill-framing { background: #3B82F6; }
+.fill-tools { background: #8B5CF6; }
+.fill-prompt { background: #F59E0B; }
+.fill-verify { background: #EC4899; }
+
+/* Explanations */
+.explanations {
+  margin-top: 16px;
+}
+
+.explanation-toggle {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: inherit;
+}
+
+.explanation-toggle .arrow {
+  transition: transform var(--transition);
+  font-size: 12px;
+}
+
+.explanation-toggle.open .arrow { transform: rotate(180deg); }
+
+.explanation-list {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+.explanation-list.open { display: flex; }
+
+.explanation-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.explanation-item h4 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.explanation-item .score-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.score-tag.perfect { background: var(--success-light); color: var(--success); }
+.score-tag.partial { background: var(--accent-light); color: var(--accent); }
+.score-tag.low { background: var(--error-light); color: var(--error); }
+
+.your-answer {
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Likert */
+.likert-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.likert-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+}
+
+.likert-btn:hover { border-color: var(--primary); }
+
+.likert-btn.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.likert-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-light);
+  padding: 0 10px;
+}
+
+/* Open text */
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: inherit;
+  min-height: 80px;
+  resize: vertical;
+  transition: border-color var(--transition);
+  color: var(--text);
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+}
+
+/* Thank you / completion */
+.completion-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  animation: popIn 0.6s ease;
+}
+
+.completion-icon.pre { background: var(--success-light); }
+.completion-icon.post { background: rgba(14,165,233,0.1); }
+
+/* Type chooser */
+.type-chooser {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.type-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.type-card:hover { border-color: var(--primary); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+.type-card h3 { font-size: 18px; margin-bottom: 4px; }
+.type-card p { font-size: 13px; color: var(--text-light); }
+
+/* Notification toast */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--text);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Post-test answer feedback colors */
+.match-drop.correct { border-color: var(--success); background: var(--success-light); }
+.match-drop.incorrect { border-color: var(--error); background: var(--error-light); }
+.cat-item.correct-cat { border-color: var(--success); background: var(--success-light); }
+.cat-item.incorrect-cat { border-color: var(--error); background: var(--error-light); }
+.sort-item.correct-pos { border-color: var(--success); background: var(--success-light); }
+.sort-item.incorrect-pos { border-color: var(--error); background: var(--error-light); }
+
+/* Responsive */
+@media (max-width: 400px) {
+  .container { padding: 10px; }
+  .card { padding: 14px; }
+  .match-left, .match-drop, .pool-item, .sort-item, .cat-item { font-size: 12px; padding: 10px; }
+  .welcome-hero h2 { font-size: 22px; }
+}
+
+/* Print hidden */
+@media print { body { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+  <!-- Dynamically rendered -->
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Configuration ──
+  const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL';
+
+  // ── State ──
+  const state = {
+    testType: null,       // 'pre' or 'post'
+    bookingId: '',
+    codingBackground: '',
+    currentScreen: 'welcome', // welcome | q1 | q2 | q3 | q4 | complete | results
+    answers: { q1: {}, q2: {}, q3: [], q4: {} },
+    scores: { q1: 0, q2: 0, q3: 0, q4: 0 },
+    q5Likert: null,
+    q6Open: '',
+    // UI state for matching
+    selectedLeft: null,
+    selectedPool: null,
+  };
+
+  // ── Question Data ──
+  const Q1 = {
+    skill: 'Problem Framing',
+    badge: 'badge-framing',
+    instruction: 'Match each vague request to its clear specification.',
+    left: [
+      { id: 1, text: '"I need a website"' },
+      { id: 2, text: '"Help me with my data"' },
+      { id: 3, text: '"Automate my emails"' },
+      { id: 4, text: '"Make me a class app"' },
+    ],
+    right: [
+      { id: 'A', text: 'Faculty profiles site with SSO login' },
+      { id: 'B', text: 'Clean 500 student records, fix formats' },
+      { id: 'C', text: 'Auto-draft 3 reply templates for Outlook' },
+      { id: 'D', text: 'QR attendance tracker with dashboard' },
+    ],
+    correct: { 1: 'A', 2: 'B', 3: 'C', 4: 'D' },
+    explanation: 'Good problem framing turns vague needs into specific requirements \u2014 who uses it, what it does, and what constraints exist.',
+  };
+
+  const Q2 = {
+    skill: 'Tool-Task Mapping',
+    badge: 'badge-tools',
+    instruction: 'Match each task to the best AI tool.',
+    left: [
+      { id: 1, text: 'Portfolio site, no coding skills' },
+      { id: 2, text: 'Python scripts with full code control' },
+      { id: 3, text: 'Web app with login + database' },
+      { id: 4, text: 'Spreadsheets on a locked-down PC' },
+    ],
+    right: [
+      { id: 'A', text: 'Lovable (no-code builder)' },
+      { id: 'B', text: 'Claude / ChatGPT (LLM)' },
+      { id: 'C', text: 'Claude + Vercel + Supabase' },
+      { id: 'D', text: 'Office Copilot (browser-based)' },
+    ],
+    correct: { 1: 'A', 2: 'B', 3: 'C', 4: 'D' },
+    explanation: 'No-code builders are fastest for visual projects. LLMs give code control. Full stacks handle deployment. Enterprise tools work within IT restrictions.',
+  };
+
+  const Q3 = {
+    skill: 'Prompt Quality',
+    badge: 'badge-prompt',
+    instruction: 'Sort these prompts from WEAKEST (top) to STRONGEST (bottom).',
+    items: [
+      { id: 1, rank: 'Weakest', text: '"Make me an attendance app"' },
+      { id: 2, rank: 'Weak', text: '"Build an app where students check in to class"' },
+      { id: 3, rank: 'Strong', text: '"Attendance tracker with QR codes, unique per session, teacher dashboard"' },
+      { id: 4, rank: 'Strongest', text: '"Attendance tracker: (1) QR expires in 15 min, (2) SSO login, (3) live dashboard, (4) CSV export, (5) mobile-friendly. Use Next.js + Supabase."' },
+    ],
+    correctOrder: [1, 2, 3, 4],
+    explanation: 'Better prompts are more specific: they include requirements, constraints, and technical details. Prompting = writing a specification.',
+  };
+
+  const Q4 = {
+    skill: 'Verification',
+    badge: 'badge-verify',
+    instruction: 'AI built a grade calculator. Which outputs have problems?',
+    items: [
+      { id: 1, text: 'Divides by 5 instead of actual number of assignments', label: 'Logic Bug', correct: 'problem' },
+      { id: 2, text: 'Validates input, calculates weighted average correctly', label: 'Correct', correct: 'good' },
+      { id: 3, text: 'Claims it "connects to the university grading API" (no such API exists)', label: 'Hallucination', correct: 'problem' },
+      { id: 4, text: 'Stores grades at a public URL with no login required', label: 'Security Flaw', correct: 'problem' },
+    ],
+    explanation: 'AI can produce logic bugs, hallucinated facts, and security flaws. Always verify before deploying.',
+  };
+
+  // ── Helpers ──
+  function $(sel) { return document.querySelector(sel); }
+  function $$(sel) { return document.querySelectorAll(sel); }
+  const app = document.getElementById('app');
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showToast(msg, duration = 2000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function getParam(key) {
+    const p = new URLSearchParams(window.location.search);
+    return p.get(key);
+  }
+
+  function saveLocal() {
+    try {
+      localStorage.setItem('learnai_state', JSON.stringify({
+        bookingId: state.bookingId,
+        codingBackground: state.codingBackground,
+        lastTestType: state.testType,
+        timestamp: new Date().toISOString(),
+      }));
+    } catch(e) {}
+  }
+
+  function loadLocal() {
+    try {
+      return JSON.parse(localStorage.getItem('learnai_state') || '{}');
+    } catch(e) { return {}; }
+  }
+
+  function saveResults() {
+    try {
+      const key = `learnai_${state.testType}_${state.bookingId}`;
+      localStorage.setItem(key, JSON.stringify({
+        bookingId: state.bookingId,
+        testType: state.testType,
+        codingBackground: state.codingBackground,
+        scores: state.scores,
+        answers: state.answers,
+        totalScore: state.scores.q1 + state.scores.q2 + state.scores.q3 + state.scores.q4,
+        q5Likert: state.q5Likert,
+        q6Open: state.q6Open,
+        timestamp: new Date().toISOString(),
+      }));
+    } catch(e) {}
+  }
+
+  function submitData(includePostItems) {
+    const total = state.scores.q1 + state.scores.q2 + state.scores.q3 + state.scores.q4;
+    const payload = {
+      booking_id: state.bookingId,
+      test_type: state.testType,
+      coding_background: state.codingBackground,
+      timestamp: new Date().toISOString(),
+      q1_score: state.scores.q1,
+      q1_answers: state.answers.q1,
+      q2_score: state.scores.q2,
+      q2_answers: state.answers.q2,
+      q3_score: state.scores.q3,
+      q3_order: state.answers.q3,
+      q4_score: state.scores.q4,
+      q4_answers: state.answers.q4,
+      total_score: total,
+      q5_likert: includePostItems ? state.q5Likert : null,
+      q6_open: includePostItems ? state.q6Open : null,
+    };
+
+    saveResults();
+
+    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL') {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {
+        showToast('Data saved locally (network issue)');
+      });
+    }
+  }
+
+  // ── Scoring ──
+  function scoreMatch(answers, correct) {
+    let s = 0;
+    for (const k of Object.keys(correct)) {
+      if (answers[k] === correct[k]) s++;
+    }
+    return s;
+  }
+
+  function scoreSort(userOrder) {
+    // Count correctly ordered pairs out of 6
+    const correct = [1, 2, 3, 4];
+    let pairs = 0;
+    for (let i = 0; i < userOrder.length; i++) {
+      for (let j = i + 1; j < userOrder.length; j++) {
+        if (userOrder[i] < userOrder[j]) pairs++;
+      }
+    }
+    // Map 0-6 pairs to 0-4
+    if (pairs >= 6) return 4;
+    if (pairs >= 5) return 3;
+    if (pairs >= 4) return 2;
+    if (pairs >= 2) return 1;
+    return 0;
+  }
+
+  function scoreCategorize(answers) {
+    const correct = { 1: 'problem', 2: 'good', 3: 'problem', 4: 'problem' };
+    let s = 0;
+    for (const k of Object.keys(correct)) {
+      if (answers[k] === correct[k]) s++;
+    }
+    return s;
+  }
+
+  function getScoreLabel(total) {
+    if (total <= 4) return { text: 'Novice', cls: 'label-novice' };
+    if (total <= 8) return { text: 'Developing', cls: 'label-developing' };
+    if (total <= 12) return { text: 'Proficient', cls: 'label-proficient' };
+    return { text: 'Expert', cls: 'label-expert' };
+  }
+
+  // ── Rendering ──
+  function render() {
+    switch (state.currentScreen) {
+      case 'chooser': renderChooser(); break;
+      case 'welcome': renderWelcome(); break;
+      case 'q1': renderMatch('q1', Q1, 1); break;
+      case 'q2': renderMatch('q2', Q2, 2); break;
+      case 'q3': renderSort(); break;
+      case 'q4': renderCategorize(); break;
+      case 'complete': renderComplete(); break;
+      case 'results': renderResults(); break;
+    }
+  }
+
+  function renderHeader(step) {
+    if (!step) return '';
+    return `
+      <div class="header">
+        <div class="header-title">
+          <h1>LearnAI Assessment</h1>
+          <span class="step-label">Q${step} of 4</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${(step/4)*100}%"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Chooser Screen ──
+  function renderChooser() {
+    app.innerHTML = `
+      <div class="screen active">
+        <div class="card">
+          <div class="welcome-hero">
+            <h2>LearnAI Assessment</h2>
+            <p>Select which test you are taking:</p>
+          </div>
+          <div class="type-chooser">
+            <div class="type-card" onclick="window._choosePre()">
+              <h3>Pre-Test</h3>
+              <p>Take this BEFORE your session</p>
+            </div>
+            <div class="type-card" onclick="window._choosePost()">
+              <h3>Post-Test</h3>
+              <p>Take this AFTER your session</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    window._choosePre = () => { state.testType = 'pre'; state.currentScreen = 'welcome'; render(); };
+    window._choosePost = () => { state.testType = 'post'; state.currentScreen = 'welcome'; render(); };
+  }
+
+  // ── Welcome Screen ──
+  function renderWelcome() {
+    const local = loadLocal();
+    const prefillId = state.testType === 'post' && local.bookingId ? local.bookingId : '';
+    const showCoding = state.testType === 'pre';
+
+    app.innerHTML = `
+      <div class="screen active">
+        <div class="card">
+          <div class="welcome-hero">
+            <h2>LearnAI Assessment</h2>
+            <p>${state.testType === 'pre' ? 'Quick assessment before your session (3 min)' : 'Quick assessment after your session (3 min)'}</p>
+          </div>
+          <div class="form-group">
+            <label for="booking-id">Session Booking ID</label>
+            <input type="text" id="booking-id" placeholder="e.g. LEA-047" value="${prefillId}">
+          </div>
+          ${showCoding ? `
+          <div class="form-group">
+            <label for="coding-bg">Coding Background</label>
+            <select id="coding-bg">
+              <option value="">Select one...</option>
+              <option value="None">None</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          ` : ''}
+          <button class="btn btn-primary btn-block" id="start-btn" disabled>Start Assessment</button>
+        </div>
+      </div>
+    `;
+
+    const idInput = $('#booking-id');
+    const codingSelect = showCoding ? $('#coding-bg') : null;
+    const startBtn = $('#start-btn');
+
+    function validate() {
+      const idOk = idInput.value.trim().length > 0;
+      const codingOk = !showCoding || (codingSelect && codingSelect.value !== '');
+      startBtn.disabled = !(idOk && codingOk);
+    }
+
+    idInput.addEventListener('input', validate);
+    if (codingSelect) codingSelect.addEventListener('change', validate);
+    validate();
+
+    startBtn.addEventListener('click', () => {
+      state.bookingId = idInput.value.trim();
+      if (showCoding) state.codingBackground = codingSelect.value;
+      else {
+        // For post-test, try to get coding background from stored pre-test data
+        const stored = loadLocal();
+        state.codingBackground = stored.codingBackground || '';
+      }
+      saveLocal();
+      state.currentScreen = 'q1';
+      // Initialize shuffled pools
+      initQ1Pool();
+      initQ2Pool();
+      initQ3Order();
+      initQ4Items();
+      render();
+    });
+  }
+
+  // ── Shuffled state for questions ──
+  let q1Pool, q2Pool, q3Order, q4Items;
+
+  function initQ1Pool() { q1Pool = shuffle(Q1.right); state.answers.q1 = {}; }
+  function initQ2Pool() { q2Pool = shuffle(Q2.right); state.answers.q2 = {}; }
+  function initQ3Order() { q3Order = shuffle([...Q3.items]); state.answers.q3 = []; }
+  function initQ4Items() {
+    const shuffled = shuffle(Q4.items);
+    q4Items = { unsorted: shuffled.map(i => i.id), good: [], problem: [] };
+    state.answers.q4 = {};
+  }
+
+  // ── Match Question (Q1 / Q2) ──
+  function renderMatch(qKey, qData, step) {
+    const answers = state.answers[qKey];
+    const usedRightIds = new Set(Object.values(answers));
+    const pool = qKey === 'q1' ? q1Pool : q2Pool;
+
+    app.innerHTML = `
+      ${renderHeader(step)}
+      <div class="screen active">
+        <div class="card">
+          <span class="q-skill-badge ${qData.badge}">${qData.skill}</span>
+          <p class="q-instruction">${qData.instruction}</p>
+          <div class="match-container" id="match-rows">
+            ${qData.left.map(l => {
+              const matched = answers[l.id];
+              const matchedItem = matched ? qData.right.find(r => r.id === matched) : null;
+              return `
+                <div class="match-row">
+                  <div class="match-left ${state.selectedLeft === l.id ? 'selected' : ''}" data-left="${l.id}">
+                    <span class="num">${l.id}</span>
+                    <span>${l.text}</span>
+                  </div>
+                  <div class="match-drop ${matched ? 'has-match' : ''}" data-left="${l.id}">
+                    ${matched ? `<span class="match-label">${matchedItem.id}</span><span>${matchedItem.text}</span><button class="clear-match" data-clear="${l.id}">&times;</button>` : '<span style="color:var(--text-light);font-size:12px;">Tap to pair</span>'}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div class="match-pool">
+            <p class="match-pool-title">Answers:</p>
+            ${pool.map(r => {
+              const used = usedRightIds.has(r.id);
+              return `
+                <div class="pool-item ${used ? 'used' : ''} ${state.selectedPool === r.id ? 'selected' : ''}" data-right="${r.id}">
+                  <span class="letter">${r.id}</span>
+                  <span>${r.text}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        <div class="btn-row">
+          ${step > 1 ? `<button class="btn btn-secondary" id="prev-btn">Back</button>` : ''}
+          <button class="btn btn-primary" id="next-btn" ${Object.keys(answers).length < 4 ? 'disabled' : ''}>Next</button>
+        </div>
+      </div>
+    `;
+
+    // Event: tap left item
+    $$('.match-left').forEach(el => {
+      el.addEventListener('click', () => {
+        const leftId = parseInt(el.dataset.left);
+        state.selectedLeft = state.selectedLeft === leftId ? null : leftId;
+        // If both selected, make match
+        if (state.selectedLeft !== null && state.selectedPool !== null) {
+          makeMatch(qKey, qData, step);
+        } else {
+          render();
+        }
+      });
+    });
+
+    // Event: tap drop zone to unselect / re-select
+    $$('.match-drop').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target.classList.contains('clear-match')) return;
+        const leftId = parseInt(el.dataset.left);
+        if (answers[leftId]) return; // already matched, use clear button
+        state.selectedLeft = leftId;
+        if (state.selectedPool !== null) {
+          makeMatch(qKey, qData, step);
+        } else {
+          render();
+        }
+      });
+    });
+
+    // Event: tap pool item
+    $$('.pool-item:not(.used)').forEach(el => {
+      el.addEventListener('click', () => {
+        const rightId = el.dataset.right;
+        state.selectedPool = state.selectedPool === rightId ? null : rightId;
+        if (state.selectedLeft !== null && state.selectedPool !== null) {
+          makeMatch(qKey, qData, step);
+        } else {
+          render();
+        }
+      });
+    });
+
+    // Event: clear match
+    $$('.clear-match').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const leftId = parseInt(el.dataset.clear);
+        delete answers[leftId];
+        render();
+      });
+    });
+
+    // Nav
+    const nextBtn = $('#next-btn');
+    nextBtn.addEventListener('click', () => {
+      state.scores[qKey] = scoreMatch(answers, qData.correct);
+      state.selectedLeft = null;
+      state.selectedPool = null;
+      state.currentScreen = step === 1 ? 'q2' : 'q3';
+      render();
+    });
+
+    if ($('#prev-btn')) {
+      $('#prev-btn').addEventListener('click', () => {
+        state.selectedLeft = null;
+        state.selectedPool = null;
+        state.currentScreen = step === 2 ? 'q1' : 'welcome';
+        render();
+      });
+    }
+  }
+
+  function makeMatch(qKey, qData, step) {
+    state.answers[qKey][state.selectedLeft] = state.selectedPool;
+    state.selectedLeft = null;
+    state.selectedPool = null;
+    render();
+  }
+
+  // ── Sort Question (Q3) ──
+  function renderSort() {
+    app.innerHTML = `
+      ${renderHeader(3)}
+      <div class="screen active">
+        <div class="card">
+          <span class="q-skill-badge ${Q3.badge}">${Q3.skill}</span>
+          <p class="q-instruction">${Q3.instruction}</p>
+          <div class="sort-label-row">
+            <span class="weak">Weakest</span>
+            <span class="strong">Strongest</span>
+          </div>
+          <div class="sort-list" id="sort-list">
+            ${q3Order.map((item, idx) => `
+              <div class="sort-item" data-id="${item.id}" data-idx="${idx}" draggable="true">
+                <span class="sort-rank">${idx + 1}</span>
+                <span class="sort-text">${item.text}</span>
+                <div class="sort-arrows">
+                  <button data-move="up" data-idx="${idx}" ${idx === 0 ? 'disabled' : ''}>&#9650;</button>
+                  <button data-move="down" data-idx="${idx}" ${idx === q3Order.length - 1 ? 'disabled' : ''}>&#9660;</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="prev-btn">Back</button>
+          <button class="btn btn-primary" id="next-btn">Next</button>
+        </div>
+      </div>
+    `;
+
+    // Arrow buttons
+    $$('.sort-arrows button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.idx);
+        const dir = btn.dataset.move;
+        const newIdx = dir === 'up' ? idx - 1 : idx + 1;
+        if (newIdx < 0 || newIdx >= q3Order.length) return;
+        [q3Order[idx], q3Order[newIdx]] = [q3Order[newIdx], q3Order[idx]];
+        render();
+      });
+    });
+
+    // Drag and drop
+    let dragIdx = null;
+    $$('.sort-item').forEach(el => {
+      el.addEventListener('dragstart', (e) => {
+        dragIdx = parseInt(el.dataset.idx);
+        el.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+        dragIdx = null;
+        $$('.sort-item').forEach(s => s.classList.remove('drag-over'));
+      });
+      el.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        el.classList.add('drag-over');
+      });
+      el.addEventListener('dragleave', () => {
+        el.classList.remove('drag-over');
+      });
+      el.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dropIdx = parseInt(el.dataset.idx);
+        if (dragIdx !== null && dragIdx !== dropIdx) {
+          const item = q3Order.splice(dragIdx, 1)[0];
+          q3Order.splice(dropIdx, 0, item);
+          render();
+        }
+      });
+    });
+
+    // Touch drag support
+    let touchDragIdx = null;
+    let touchClone = null;
+    let touchStartY = 0;
+
+    $$('.sort-item').forEach(el => {
+      el.addEventListener('touchstart', (e) => {
+        // Only activate drag on longer press or intentional touch on rank
+        touchDragIdx = parseInt(el.dataset.idx);
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      el.addEventListener('touchmove', (e) => {
+        if (touchDragIdx === null) return;
+        const touch = e.touches[0];
+        const diff = Math.abs(touch.clientY - touchStartY);
+        if (diff > 10) {
+          e.preventDefault();
+          // Find which element we're over
+          const elements = $$('.sort-item');
+          elements.forEach((s, i) => {
+            const rect = s.getBoundingClientRect();
+            if (touch.clientY >= rect.top && touch.clientY <= rect.bottom && i !== touchDragIdx) {
+              s.classList.add('drag-over');
+            } else {
+              s.classList.remove('drag-over');
+            }
+          });
+        }
+      }, { passive: false });
+
+      el.addEventListener('touchend', (e) => {
+        if (touchDragIdx === null) return;
+        const touch = e.changedTouches[0];
+        const elements = $$('.sort-item');
+        let dropIdx = null;
+        elements.forEach((s, i) => {
+          const rect = s.getBoundingClientRect();
+          if (touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+            dropIdx = i;
+          }
+          s.classList.remove('drag-over');
+        });
+        if (dropIdx !== null && dropIdx !== touchDragIdx) {
+          const item = q3Order.splice(touchDragIdx, 1)[0];
+          q3Order.splice(dropIdx, 0, item);
+          render();
+        }
+        touchDragIdx = null;
+      });
+    });
+
+    // Nav
+    $('#prev-btn').addEventListener('click', () => { state.currentScreen = 'q2'; render(); });
+    $('#next-btn').addEventListener('click', () => {
+      state.answers.q3 = q3Order.map(i => i.id);
+      state.scores.q3 = scoreSort(state.answers.q3);
+      state.currentScreen = 'q4';
+      render();
+    });
+  }
+
+  // ── Categorize Question (Q4) ──
+  function renderCategorize() {
+    const allItems = Q4.items;
+
+    app.innerHTML = `
+      ${renderHeader(4)}
+      <div class="screen active">
+        <div class="card">
+          <span class="q-skill-badge ${Q4.badge}">${Q4.skill}</span>
+          <p class="q-instruction">${Q4.instruction}</p>
+          <div class="zone-container">
+            <div class="zone zone-good">
+              <div class="zone-title"><span>&#10003;</span> Looks Good</div>
+              <div class="zone-items" id="zone-good">
+                ${q4Items.good.map(id => {
+                  const item = allItems.find(i => i.id === id);
+                  return `<div class="cat-item" data-id="${id}" data-zone="good"><span class="cat-num">${id}</span><span>${item.text}</span><span class="toggle-hint">tap to move</span></div>`;
+                }).join('')}
+                ${q4Items.good.length === 0 ? '<p style="font-size:12px;color:var(--text-light);text-align:center;padding:8px 0;">Tap items below to categorize</p>' : ''}
+              </div>
+            </div>
+            <div class="zone zone-bad">
+              <div class="zone-title"><span>&#9888;</span> Problems Found</div>
+              <div class="zone-items" id="zone-problem">
+                ${q4Items.problem.map(id => {
+                  const item = allItems.find(i => i.id === id);
+                  return `<div class="cat-item" data-id="${id}" data-zone="problem"><span class="cat-num">${id}</span><span>${item.text}</span><span class="toggle-hint">tap to move</span></div>`;
+                }).join('')}
+                ${q4Items.problem.length === 0 ? '<p style="font-size:12px;color:var(--text-light);text-align:center;padding:8px 0;">Tap items below to categorize</p>' : ''}
+              </div>
+            </div>
+          </div>
+          ${q4Items.unsorted.length > 0 ? `
+          <div class="cat-pool">
+            <p class="cat-pool-title">Review these outputs:</p>
+            ${q4Items.unsorted.map(id => {
+              const item = allItems.find(i => i.id === id);
+              return `
+                <div style="display:flex;gap:6px;margin-bottom:8px;">
+                  <button class="btn btn-secondary" style="padding:8px 14px;min-height:40px;font-size:12px;flex-shrink:0;border-color:var(--success);color:var(--success);" data-sort-id="${id}" data-dest="good">&#10003; Good</button>
+                  <div style="flex:1;background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:13px;line-height:1.4;display:flex;align-items:center;gap:8px;">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--text-light);font-size:11px;font-weight:700;flex-shrink:0;">${id}</span>
+                    <span>${item.text}</span>
+                  </div>
+                  <button class="btn btn-secondary" style="padding:8px 14px;min-height:40px;font-size:12px;flex-shrink:0;border-color:var(--error);color:var(--error);" data-sort-id="${id}" data-dest="problem">&#9888; Err</button>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          ` : ''}
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="prev-btn">Back</button>
+          <button class="btn btn-primary" id="next-btn" ${q4Items.unsorted.length > 0 ? 'disabled' : ''}>Finish</button>
+        </div>
+      </div>
+    `;
+
+    // Sort buttons
+    $$('[data-sort-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.sortId);
+        const dest = btn.dataset.dest;
+        q4Items.unsorted = q4Items.unsorted.filter(i => i !== id);
+        q4Items[dest].push(id);
+        render();
+      });
+    });
+
+    // Tap items in zones to cycle: good -> problem -> unsorted
+    $$('.cat-item[data-zone]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = parseInt(el.dataset.id);
+        const zone = el.dataset.zone;
+        // Remove from current zone
+        q4Items[zone] = q4Items[zone].filter(i => i !== id);
+        // Move to next zone
+        if (zone === 'good') q4Items.problem.push(id);
+        else q4Items.unsorted.push(id);
+        render();
+      });
+    });
+
+    // Nav
+    $('#prev-btn').addEventListener('click', () => { state.currentScreen = 'q3'; render(); });
+    $('#next-btn').addEventListener('click', () => {
+      // Build answers
+      q4Items.good.forEach(id => state.answers.q4[id] = 'good');
+      q4Items.problem.forEach(id => state.answers.q4[id] = 'problem');
+      state.scores.q4 = scoreCategorize(state.answers.q4);
+      // Score all
+      state.scores.q1 = scoreMatch(state.answers.q1, Q1.correct);
+      state.scores.q2 = scoreMatch(state.answers.q2, Q2.correct);
+
+      if (state.testType === 'pre') {
+        submitData(false);
+        state.currentScreen = 'complete';
+      } else {
+        submitData(false);
+        state.currentScreen = 'results';
+      }
+      render();
+    });
+  }
+
+  // ── Pre-test Complete ──
+  function renderComplete() {
+    app.innerHTML = `
+      <div class="screen active" style="justify-content:center;align-items:center;text-align:center;">
+        <div class="card" style="padding:40px 24px;">
+          <div class="completion-icon pre">&#10003;</div>
+          <h2 style="font-size:22px;margin-bottom:8px;">Thank you!</h2>
+          <p style="color:var(--text-light);font-size:15px;">Your responses have been recorded.<br>Your session will begin now.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Post-test Results ──
+  function renderResults() {
+    const total = state.scores.q1 + state.scores.q2 + state.scores.q3 + state.scores.q4;
+    const label = getScoreLabel(total);
+    const skills = [
+      { name: 'Problem Framing', score: state.scores.q1, fill: 'fill-framing' },
+      { name: 'Tool-Task Mapping', score: state.scores.q2, fill: 'fill-tools' },
+      { name: 'Prompt Quality', score: state.scores.q3, fill: 'fill-prompt' },
+      { name: 'Verification', score: state.scores.q4, fill: 'fill-verify' },
+    ];
+
+    function scoreTag(s) {
+      if (s === 4) return '<span class="score-tag perfect">4/4</span>';
+      if (s >= 2) return `<span class="score-tag partial">${s}/4</span>`;
+      return `<span class="score-tag low">${s}/4</span>`;
+    }
+
+    function answerDetail(qKey) {
+      if (qKey === 'q1' || qKey === 'q2') {
+        const qData = qKey === 'q1' ? Q1 : Q2;
+        const ans = state.answers[qKey];
+        return qData.left.map(l => {
+          const userAns = ans[l.id] || '?';
+          const correct = qData.correct[l.id];
+          const isCorrect = userAns === correct;
+          return `<div style="font-size:12px;margin-bottom:2px;">${l.id} &rarr; ${userAns} ${isCorrect ? '<span style="color:var(--success);">&#10003;</span>' : `<span style="color:var(--error);">&#10007; (correct: ${correct})</span>`}</div>`;
+        }).join('');
+      }
+      if (qKey === 'q3') {
+        const userOrder = state.answers.q3;
+        return `<div style="font-size:12px;">Your order: ${userOrder.join(', ')}<br>Correct order: 1, 2, 3, 4 (weakest to strongest)</div>`;
+      }
+      if (qKey === 'q4') {
+        const ans = state.answers.q4;
+        const correct = { 1: 'problem', 2: 'good', 3: 'problem', 4: 'problem' };
+        return Object.keys(correct).map(k => {
+          const userAns = ans[k] || '?';
+          const isCorrect = userAns === correct[k];
+          return `<div style="font-size:12px;margin-bottom:2px;">Item ${k}: ${userAns} ${isCorrect ? '<span style="color:var(--success);">&#10003;</span>' : `<span style="color:var(--error);">&#10007; (correct: ${correct[k]})</span>`}</div>`;
+        }).join('');
+      }
+      return '';
+    }
+
+    const explanations = [
+      { key: 'q1', title: 'Q1: Problem Framing', score: state.scores.q1, text: Q1.explanation },
+      { key: 'q2', title: 'Q2: Tool-Task Mapping', score: state.scores.q2, text: Q2.explanation },
+      { key: 'q3', title: 'Q3: Prompt Quality', score: state.scores.q3, text: Q3.explanation },
+      { key: 'q4', title: 'Q4: Verification', score: state.scores.q4, text: Q4.explanation },
+    ];
+
+    app.innerHTML = `
+      <div class="screen active">
+        <div class="card">
+          <div class="results-hero">
+            <div class="score-circle">
+              <span class="score-num" id="score-counter">0</span>
+              <span class="score-of">/ 16</span>
+            </div>
+            <div class="score-label ${label.cls}" id="score-label">${label.text}</div>
+          </div>
+          <div class="skill-bars">
+            ${skills.map(s => `
+              <div class="skill-row">
+                <div class="skill-row-header">
+                  <span>${s.name}</span>
+                  <span>${s.score}/4</span>
+                </div>
+                <div class="skill-bar-bg">
+                  <div class="skill-bar-fill ${s.fill}" data-width="${(s.score/4)*100}" style="width:0%"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="explanations">
+            <button class="explanation-toggle" id="exp-toggle">
+              <span>View detailed explanations</span>
+              <span class="arrow">&#9660;</span>
+            </button>
+            <div class="explanation-list" id="exp-list">
+              ${explanations.map(e => `
+                <div class="explanation-item">
+                  <h4>${e.title} ${scoreTag(e.score)}</h4>
+                  <p>${e.text}</p>
+                  <div class="your-answer">${answerDetail(e.key)}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="form-group">
+            <label>How confident are you using AI independently now?</label>
+            <div class="likert-row" id="likert-row">
+              ${[1,2,3,4,5].map(n => `<button class="likert-btn" data-val="${n}">${n}</button>`).join('')}
+            </div>
+            <div class="likert-labels">
+              <span>Not at all</span>
+              <span>Very confident</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="q6-text">What was the most useful thing you learned today?</label>
+            <textarea id="q6-text" placeholder="1-2 sentences..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" id="submit-btn" disabled>Submit</button>
+        </div>
+      </div>
+    `;
+
+    // Animate score counter
+    let current = 0;
+    const counterEl = document.getElementById('score-counter');
+    const interval = setInterval(() => {
+      current++;
+      counterEl.textContent = current;
+      if (current >= total) clearInterval(interval);
+    }, 80);
+
+    // Animate skill bars
+    setTimeout(() => {
+      $$('.skill-bar-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    }, 300);
+
+    // Explanation toggle
+    const expToggle = $('#exp-toggle');
+    const expList = $('#exp-list');
+    expToggle.addEventListener('click', () => {
+      expToggle.classList.toggle('open');
+      expList.classList.toggle('open');
+    });
+
+    // Likert
+    const submitBtn = $('#submit-btn');
+    $$('.likert-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.likert-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.q5Likert = parseInt(btn.dataset.val);
+        validateSubmit();
+      });
+    });
+
+    // Open text
+    const q6Text = $('#q6-text');
+    q6Text.addEventListener('input', () => { state.q6Open = q6Text.value; validateSubmit(); });
+
+    function validateSubmit() {
+      submitBtn.disabled = state.q5Likert === null;
+    }
+
+    submitBtn.addEventListener('click', () => {
+      submitData(true);
+      saveResults();
+      showToast('Responses submitted!');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitted!';
+      submitBtn.style.background = 'var(--success)';
+    });
+  }
+
+  // ── Init ──
+  function init() {
+    const typeParam = getParam('type');
+    if (typeParam === 'pre' || typeParam === 'post') {
+      state.testType = typeParam;
+      state.currentScreen = 'welcome';
+    } else {
+      state.currentScreen = 'chooser';
+    }
+    render();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
