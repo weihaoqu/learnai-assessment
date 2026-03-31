@@ -13,17 +13,17 @@
  * 9. Paste that URL into assessment-v2.html (replace YOUR_GOOGLE_SCRIPT_URL)
  *
  * SHEETS AUTO-CREATED:
- *   "Pre-Test"  — 5 scenario scores (S1, S3, S5, S7, S9) + category scores
- *   "Post-Test" — 5 scenario scores (S2, S4, S6, S8, S10) + category scores + feedback
+ *   "Pre-Test"  — 6 question scores (S1-S6) + category scores
+ *   "Post-Test" — 6 question scores (S7-S12) + category scores + feedback
  *   "Paired"    — auto-matched pre/post by session date, with gain scores
  *   "Rubric"    — scoring rubric reference (auto-generated once)
  *
  * SCORING (per test):
- *   5 scenarios × 4 pts max = 20 pts
- *   Level 1 (5-9):   Passive Consumer
- *   Level 2 (10-13): Developing User
- *   Level 3 (14-17): Proficient Creator
- *   Level 4 (18-20): Process Partner
+ *   6 questions × 4 pts max = 24 pts
+ *   Level 1 (6-11):  Passive Consumer
+ *   Level 2 (12-15): Developing User
+ *   Level 3 (16-20): Proficient Creator
+ *   Level 4 (21-24): Process Partner
  *
  * PAIRING LOGIC:
  *   Since participant_id is auto-generated (timestamp-based), pairing is done
@@ -35,24 +35,26 @@
 var PRE_HEADERS = [
   'participant_id', 'timestamp', 'date', 'coding_background',
   'total_score', 'level',
-  'cat_problem', 'cat_tool', 'cat_prompt', 'cat_verify', 'cat_mindset',
+  'cat_foundations', 'cat_prompt', 'cat_evaluation', 'cat_ethics', 'cat_collaboration', 'cat_tool',
   's01_score', 's01_choice',
+  's02_score', 's02_choice',
   's03_score', 's03_choice',
+  's04_score', 's04_choice',
   's05_score', 's05_choice',
-  's07_score', 's07_choice',
-  's09_score', 's09_choice',
+  's06_score', 's06_choice',
   'analysis'
 ];
 
 var POST_HEADERS = [
   'participant_id', 'timestamp', 'date',
   'total_score', 'level',
-  'cat_problem', 'cat_tool', 'cat_prompt', 'cat_verify', 'cat_mindset',
-  's02_score', 's02_choice',
-  's04_score', 's04_choice',
-  's06_score', 's06_choice',
+  'cat_foundations', 'cat_prompt', 'cat_evaluation', 'cat_ethics', 'cat_collaboration', 'cat_tool',
+  's07_score', 's07_choice',
   's08_score', 's08_choice',
+  's09_score', 's09_choice',
   's10_score', 's10_choice',
+  's11_score', 's11_choice',
+  's12_score', 's12_choice',
   'analysis',
   'likert_confidence', 'open_response'
 ];
@@ -61,19 +63,20 @@ var PAIRED_HEADERS = [
   'date', 'coding_background',
   'pre_id', 'post_id',
   'pre_total', 'post_total', 'gain', 'pre_level', 'post_level',
-  'pre_problem', 'post_problem', 'gain_problem',
-  'pre_tool', 'post_tool', 'gain_tool',
+  'pre_foundations', 'post_foundations', 'gain_foundations',
   'pre_prompt', 'post_prompt', 'gain_prompt',
-  'pre_verify', 'post_verify', 'gain_verify',
-  'pre_mindset', 'post_mindset', 'gain_mindset',
+  'pre_evaluation', 'post_evaluation', 'gain_evaluation',
+  'pre_ethics', 'post_ethics', 'gain_ethics',
+  'pre_collaboration', 'post_collaboration', 'gain_collaboration',
+  'pre_tool', 'post_tool', 'gain_tool',
   'likert_confidence', 'open_response'
 ];
 
 // ─── Level calculation ──────────────────────────────────────────────────
 function getLevel(score) {
-  if (score >= 18) return 'L4: Process Partner';
-  if (score >= 14) return 'L3: Proficient Creator';
-  if (score >= 10) return 'L2: Developing User';
+  if (score >= 21) return 'L4: Process Partner';
+  if (score >= 16) return 'L3: Proficient Creator';
+  if (score >= 12) return 'L2: Developing User';
   return 'L1: Passive Consumer';
 }
 
@@ -101,24 +104,26 @@ function doPost(e) {
       row = [
         data.participant_id, data.timestamp, date, data.coding_background,
         data.total_score, level,
-        data.cat_problem, data.cat_tool, data.cat_prompt, data.cat_verify, data.cat_mindset,
+        data.cat_foundations, data.cat_prompt, data.cat_evaluation, data.cat_ethics, data.cat_collaboration, data.cat_tool,
         data.s01_score, data.s01_choice,
+        data.s02_score, data.s02_choice,
         data.s03_score, data.s03_choice,
+        data.s04_score, data.s04_choice,
         data.s05_score, data.s05_choice,
-        data.s07_score, data.s07_choice,
-        data.s09_score, data.s09_choice,
+        data.s06_score, data.s06_choice,
         data.analysis || ''
       ];
     } else {
       row = [
         data.participant_id, data.timestamp, date,
         data.total_score, level,
-        data.cat_problem, data.cat_tool, data.cat_prompt, data.cat_verify, data.cat_mindset,
-        data.s02_score, data.s02_choice,
-        data.s04_score, data.s04_choice,
-        data.s06_score, data.s06_choice,
+        data.cat_foundations, data.cat_prompt, data.cat_evaluation, data.cat_ethics, data.cat_collaboration, data.cat_tool,
+        data.s07_score, data.s07_choice,
         data.s08_score, data.s08_choice,
+        data.s09_score, data.s09_choice,
         data.s10_score, data.s10_choice,
+        data.s11_score, data.s11_choice,
+        data.s12_score, data.s12_choice,
         data.analysis || '',
         data.likert_confidence || '',
         data.open_response || ''
@@ -178,7 +183,7 @@ function updatePairedSheet(ss) {
 
   // Index by date — keep latest entry per date
   // Pre: participant_id(0), timestamp(1), date(2), coding_bg(3), total(4), level(5),
-  //       cat_problem(6), cat_tool(7), cat_prompt(8), cat_verify(9), cat_mindset(10)
+  //       cat_foundations(6), cat_prompt(7), cat_evaluation(8), cat_ethics(9), cat_collaboration(10), cat_tool(11)
   var preMap = {};
   preData.forEach(function(row) {
     var date = String(row[2]);
@@ -186,14 +191,14 @@ function updatePairedSheet(ss) {
       preMap[date] = {
         id: row[0], timestamp: row[1], coding_bg: row[3],
         total: row[4], level: row[5],
-        problem: row[6], tool: row[7], prompt: row[8], verify: row[9], mindset: row[10]
+        foundations: row[6], prompt: row[7], evaluation: row[8], ethics: row[9], collaboration: row[10], tool: row[11]
       };
     }
   });
 
   // Post: participant_id(0), timestamp(1), date(2), total(3), level(4),
-  //        cat_problem(5), cat_tool(6), cat_prompt(7), cat_verify(8), cat_mindset(9),
-  //        s02_score(10)..s10_choice(19), analysis(20), likert(21), open(22)
+  //        cat_foundations(5), cat_prompt(6), cat_evaluation(7), cat_ethics(8), cat_collaboration(9), cat_tool(10),
+  //        s07_score(11)..s12_choice(22), analysis(23), likert(24), open(25)
   var postMap = {};
   postData.forEach(function(row) {
     var date = String(row[2]);
@@ -201,8 +206,8 @@ function updatePairedSheet(ss) {
       postMap[date] = {
         id: row[0], timestamp: row[1],
         total: row[3], level: row[4],
-        problem: row[5], tool: row[6], prompt: row[7], verify: row[8], mindset: row[9],
-        analysis: row[20], likert: row[21], open: row[22]
+        foundations: row[5], prompt: row[6], evaluation: row[7], ethics: row[8], collaboration: row[9], tool: row[10],
+        analysis: row[23], likert: row[24], open: row[25]
       };
     }
   });
@@ -229,11 +234,12 @@ function updatePairedSheet(ss) {
       date, pre.coding_bg,
       pre.id, post.id,
       pre.total, post.total, post.total - pre.total, pre.level, post.level,
-      pre.problem, post.problem, post.problem - pre.problem,
-      pre.tool, post.tool, post.tool - pre.tool,
+      pre.foundations, post.foundations, post.foundations - pre.foundations,
       pre.prompt, post.prompt, post.prompt - pre.prompt,
-      pre.verify, post.verify, post.verify - pre.verify,
-      pre.mindset, post.mindset, post.mindset - pre.mindset,
+      pre.evaluation, post.evaluation, post.evaluation - pre.evaluation,
+      pre.ethics, post.ethics, post.ethics - pre.ethics,
+      pre.collaboration, post.collaboration, post.collaboration - pre.collaboration,
+      pre.tool, post.tool, post.tool - pre.tool,
       post.likert, post.open
     ]);
   });
@@ -246,6 +252,8 @@ function updatePairedSheet(ss) {
     pairedSheet.appendRow([]); // blank separator
 
     // Row labels for summary
+    // Columns: E=pre_total, F=post_total, G=gain, J-L=foundations, M-O=prompt,
+    //          P-R=evaluation, S-U=ethics, V-X=collaboration, Y-AA=tool, AB=likert
     pairedSheet.appendRow([
       'SUMMARY', 'N=' + n, '', '',
       '=AVERAGE(E2:E' + r + ')', '=AVERAGE(F2:F' + r + ')', '=AVERAGE(G2:G' + r + ')', '', '',
@@ -253,7 +261,9 @@ function updatePairedSheet(ss) {
       '=AVERAGE(M2:M' + r + ')', '=AVERAGE(N2:N' + r + ')', '=AVERAGE(O2:O' + r + ')',
       '=AVERAGE(P2:P' + r + ')', '=AVERAGE(Q2:Q' + r + ')', '=AVERAGE(R2:R' + r + ')',
       '=AVERAGE(S2:S' + r + ')', '=AVERAGE(T2:T' + r + ')', '=AVERAGE(U2:U' + r + ')',
-      '=AVERAGE(V2:V' + r + ')'
+      '=AVERAGE(V2:V' + r + ')', '=AVERAGE(W2:W' + r + ')', '=AVERAGE(X2:X' + r + ')',
+      '=AVERAGE(Y2:Y' + r + ')', '=AVERAGE(Z2:Z' + r + ')', '=AVERAGE(AA2:AA' + r + ')',
+      '=AVERAGE(AB2:AB' + r + ')'
     ]);
     pairedSheet.appendRow([
       '', 'Median', '', '',
@@ -262,7 +272,9 @@ function updatePairedSheet(ss) {
       '=MEDIAN(M2:M' + r + ')', '=MEDIAN(N2:N' + r + ')', '=MEDIAN(O2:O' + r + ')',
       '=MEDIAN(P2:P' + r + ')', '=MEDIAN(Q2:Q' + r + ')', '=MEDIAN(R2:R' + r + ')',
       '=MEDIAN(S2:S' + r + ')', '=MEDIAN(T2:T' + r + ')', '=MEDIAN(U2:U' + r + ')',
-      '=MEDIAN(V2:V' + r + ')'
+      '=MEDIAN(V2:V' + r + ')', '=MEDIAN(W2:W' + r + ')', '=MEDIAN(X2:X' + r + ')',
+      '=MEDIAN(Y2:Y' + r + ')', '=MEDIAN(Z2:Z' + r + ')', '=MEDIAN(AA2:AA' + r + ')',
+      '=MEDIAN(AB2:AB' + r + ')'
     ]);
     pairedSheet.appendRow([
       '', 'Std Dev', '', '',
@@ -271,7 +283,9 @@ function updatePairedSheet(ss) {
       '=STDEV(M2:M' + r + ')', '=STDEV(N2:N' + r + ')', '=STDEV(O2:O' + r + ')',
       '=STDEV(P2:P' + r + ')', '=STDEV(Q2:Q' + r + ')', '=STDEV(R2:R' + r + ')',
       '=STDEV(S2:S' + r + ')', '=STDEV(T2:T' + r + ')', '=STDEV(U2:U' + r + ')',
-      '=STDEV(V2:V' + r + ')'
+      '=STDEV(V2:V' + r + ')', '=STDEV(W2:W' + r + ')', '=STDEV(X2:X' + r + ')',
+      '=STDEV(Y2:Y' + r + ')', '=STDEV(Z2:Z' + r + ')', '=STDEV(AA2:AA' + r + ')',
+      '=STDEV(AB2:AB' + r + ')'
     ]);
     pairedSheet.appendRow([
       '', 'Effect Size (d)', '', '',
@@ -302,25 +316,26 @@ function ensureRubricSheet(ss) {
   sheet.appendRow([4, 'L4', 'Process Partner', 'Defines problem first, picks right tool, gives specific prompts, verifies output, owns the process.']);
   sheet.appendRow([]);
 
-  sheet.appendRow(['OVERALL SCORE RANGES (per test, 5 scenarios)']);
+  sheet.appendRow(['OVERALL SCORE RANGES (per test, 6 questions)']);
   sheet.getRange(sheet.getLastRow(), 1).setFontWeight('bold');
   sheet.appendRow(['Score Range', 'Level', 'Interpretation']);
   sheet.getRange(sheet.getLastRow(), 1, 1, 3).setFontWeight('bold');
-  sheet.appendRow(['5-9', 'L1: Passive Consumer', 'Needs foundational AI literacy']);
-  sheet.appendRow(['10-13', 'L2: Developing User', 'Has some awareness, needs guided practice']);
-  sheet.appendRow(['14-17', 'L3: Proficient Creator', 'Good grasp, can work semi-independently']);
-  sheet.appendRow(['18-20', 'L4: Process Partner', 'Strong AI mastery, independent workflow']);
+  sheet.appendRow(['6-11', 'L1: Passive Consumer', 'Needs foundational AI literacy']);
+  sheet.appendRow(['12-15', 'L2: Developing User', 'Has some awareness, needs guided practice']);
+  sheet.appendRow(['16-20', 'L3: Proficient Creator', 'Good grasp, can work semi-independently']);
+  sheet.appendRow(['21-24', 'L4: Process Partner', 'Strong AI mastery, independent workflow']);
   sheet.appendRow([]);
 
-  sheet.appendRow(['SKILL CATEGORIES (1 scenario each per test, max 4 pts)']);
+  sheet.appendRow(['SKILL CATEGORIES (1 question each per test, max 4 pts)']);
   sheet.getRange(sheet.getLastRow(), 1).setFontWeight('bold');
-  sheet.appendRow(['Category', 'Pre Scenario', 'Post Scenario', 'What it Measures']);
+  sheet.appendRow(['Category', 'Pre Question', 'Post Question', 'What it Measures']);
   sheet.getRange(sheet.getLastRow(), 1, 1, 4).setFontWeight('bold');
-  sheet.appendRow(['Problem Framing', 'S01: The Starting Point', 'S02: The Unclear Request', 'Can they define the problem before jumping to AI?']);
-  sheet.appendRow(['Tool Selection', 'S03: Right Tool, Right Job', 'S04: Locked Down', 'Can they pick the right AI tool for the context?']);
-  sheet.appendRow(['Prompt Engineering', 'S05: The Prompt Upgrade', 'S06: The Conversation', 'Can they write specific, actionable prompts?']);
-  sheet.appendRow(['Verification', 'S07: Trust but Verify', 'S08: The Hallucination', 'Do they check AI output before trusting it?']);
-  sheet.appendRow(['Independence & Mindset', 'S09: After the Session', 'S10: The Role of AI', 'Can they work independently and articulate AI\'s role?']);
+  sheet.appendRow(['AI Foundations', 'S01: AI "I think/believe"', 'S07: AI scores 90% on medical exam', 'Do they understand what AI actually is and isn\'t?']);
+  sheet.appendRow(['Prompt Engineering', 'S02: Vague climate essay', 'S08: Overly long responses', 'Can they write specific, constrained prompts?']);
+  sheet.appendRow(['Critical Evaluation', 'S03: AI citations', 'S09: Same answer 3 times', 'Do they verify AI output rather than trust appearances?']);
+  sheet.appendRow(['Ethics & Safety', 'S04: Customer emails in ChatGPT', 'S10: AI hiring bias', 'Do they recognize privacy and bias risks?']);
+  sheet.appendRow(['Human-AI Collaboration', 'S05: Project proposal workflow', 'S11: AI least helpful for learning', 'Can they lead the human-AI partnership effectively?']);
+  sheet.appendRow(['Tool Selection', 'S06: Extract from 50-page PDF', 'S12: Local vs cloud AI', 'Can they pick the right tool for the task?']);
   sheet.appendRow([]);
 
   sheet.appendRow(['PAIRING LOGIC']);

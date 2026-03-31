@@ -1,0 +1,89 @@
+{
+  "jobs": 4,
+  "tasks": [
+    {
+      "id": "s01-foundations",
+      "promptFiles": ["style.md", "s01.md"],
+      "image": "../../images/scenarios/s01-foundations.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s02-prompt",
+      "promptFiles": ["style.md", "s02.md"],
+      "image": "../../images/scenarios/s02-prompt.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s03-evaluation",
+      "promptFiles": ["style.md", "s03.md"],
+      "image": "../../images/scenarios/s03-evaluation.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s04-ethics",
+      "promptFiles": ["style.md", "s04.md"],
+      "image": "../../images/scenarios/s04-ethics.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s05-collaboration",
+      "promptFiles": ["style.md", "s05.md"],
+      "image": "../../images/scenarios/s05-collaboration.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s06-tool",
+      "promptFiles": ["style.md", "s06.md"],
+      "image": "../../images/scenarios/s06-tool.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s07-foundations",
+      "promptFiles": ["style.md", "s07.md"],
+      "image": "../../images/scenarios/s07-foundations.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s08-prompt",
+      "promptFiles": ["style.md", "s08.md"],
+      "image": "../../images/scenarios/s08-prompt.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s09-evaluation",
+      "promptFiles": ["style.md", "s09.md"],
+      "image": "../../images/scenarios/s09-evaluation.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s10-ethics",
+      "promptFiles": ["style.md", "s10.md"],
+      "image": "../../images/scenarios/s10-ethics.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s11-collaboration",
+      "promptFiles": ["style.md", "s11.md"],
+      "image": "../../images/scenarios/s11-collaboration.png",
+      "ar": "16:10",
+      "quality": "2k"
+    },
+    {
+      "id": "s12-tool",
+      "promptFiles": ["style.md", "s12.md"],
+      "image": "../../images/scenarios/s12-tool.png",
+      "ar": "16:10",
+      "quality": "2k"
+    }
+  ]
+}

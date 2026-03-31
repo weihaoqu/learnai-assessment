@@ -1,0 +1,1 @@
+Style: Clean, modern flat vector illustration for a mobile education app. Soft pastel color palette with teal (#0d9488) as accent. Simple geometric shapes, no photorealism. Minimal detail, large readable elements. White or light mint background. No text or words in the image. Aspect ratio 16:10.
