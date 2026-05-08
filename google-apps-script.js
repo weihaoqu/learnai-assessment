@@ -33,7 +33,7 @@
 
 // ─── Column definitions ─────────────────────────────────────────────────
 var PRE_HEADERS = [
-  'participant_id', 'timestamp', 'date', 'coding_background',
+  'participant_id', 'timestamp', 'date', 'consent', 'coding_background',
   'total_score', 'level',
   'cat_foundations', 'cat_prompt', 'cat_evaluation', 'cat_ethics', 'cat_collaboration', 'cat_tool',
   's01_score', 's01_choice',
@@ -46,7 +46,7 @@ var PRE_HEADERS = [
 ];
 
 var POST_HEADERS = [
-  'participant_id', 'timestamp', 'date',
+  'participant_id', 'timestamp', 'date', 'consent',
   'total_score', 'level',
   'cat_foundations', 'cat_prompt', 'cat_evaluation', 'cat_ethics', 'cat_collaboration', 'cat_tool',
   's07_score', 's07_choice',
@@ -102,7 +102,7 @@ function doPost(e) {
     var row;
     if (data.test_type === 'pre') {
       row = [
-        data.participant_id, data.timestamp, date, data.coding_background,
+        data.participant_id, data.timestamp, date, data.consent || '', data.coding_background,
         data.total_score, level,
         data.cat_foundations, data.cat_prompt, data.cat_evaluation, data.cat_ethics, data.cat_collaboration, data.cat_tool,
         data.s01_score, data.s01_choice,
@@ -115,7 +115,7 @@ function doPost(e) {
       ];
     } else {
       row = [
-        data.participant_id, data.timestamp, date,
+        data.participant_id, data.timestamp, date, data.consent || '',
         data.total_score, level,
         data.cat_foundations, data.cat_prompt, data.cat_evaluation, data.cat_ethics, data.cat_collaboration, data.cat_tool,
         data.s07_score, data.s07_choice,
@@ -182,32 +182,32 @@ function updatePairedSheet(ss) {
   var postData = postSheet.getRange(2, 1, postSheet.getLastRow() - 1, postSheet.getLastColumn()).getValues();
 
   // Index by date — keep latest entry per date
-  // Pre: participant_id(0), timestamp(1), date(2), coding_bg(3), total(4), level(5),
-  //       cat_foundations(6), cat_prompt(7), cat_evaluation(8), cat_ethics(9), cat_collaboration(10), cat_tool(11)
+  // Pre: participant_id(0), timestamp(1), date(2), consent(3), coding_bg(4), total(5), level(6),
+  //       cat_foundations(7), cat_prompt(8), cat_evaluation(9), cat_ethics(10), cat_collaboration(11), cat_tool(12)
   var preMap = {};
   preData.forEach(function(row) {
     var date = String(row[2]);
     if (!preMap[date] || String(row[1]) > String(preMap[date].timestamp)) {
       preMap[date] = {
-        id: row[0], timestamp: row[1], coding_bg: row[3],
-        total: row[4], level: row[5],
-        foundations: row[6], prompt: row[7], evaluation: row[8], ethics: row[9], collaboration: row[10], tool: row[11]
+        id: row[0], timestamp: row[1], coding_bg: row[4],
+        total: row[5], level: row[6],
+        foundations: row[7], prompt: row[8], evaluation: row[9], ethics: row[10], collaboration: row[11], tool: row[12]
       };
     }
   });
 
-  // Post: participant_id(0), timestamp(1), date(2), total(3), level(4),
-  //        cat_foundations(5), cat_prompt(6), cat_evaluation(7), cat_ethics(8), cat_collaboration(9), cat_tool(10),
-  //        s07_score(11)..s12_choice(22), analysis(23), likert(24), open(25)
+  // Post: participant_id(0), timestamp(1), date(2), consent(3), total(4), level(5),
+  //        cat_foundations(6), cat_prompt(7), cat_evaluation(8), cat_ethics(9), cat_collaboration(10), cat_tool(11),
+  //        s07_score(12)..s12_choice(23), analysis(24), likert(25), open(26)
   var postMap = {};
   postData.forEach(function(row) {
     var date = String(row[2]);
     if (!postMap[date] || String(row[1]) > String(postMap[date].timestamp)) {
       postMap[date] = {
         id: row[0], timestamp: row[1],
-        total: row[3], level: row[4],
-        foundations: row[5], prompt: row[6], evaluation: row[7], ethics: row[8], collaboration: row[9], tool: row[10],
-        analysis: row[23], likert: row[24], open: row[25]
+        total: row[4], level: row[5],
+        foundations: row[6], prompt: row[7], evaluation: row[8], ethics: row[9], collaboration: row[10], tool: row[11],
+        analysis: row[24], likert: row[25], open: row[26]
       };
     }
   });
@@ -330,12 +330,12 @@ function ensureRubricSheet(ss) {
   sheet.getRange(sheet.getLastRow(), 1).setFontWeight('bold');
   sheet.appendRow(['Category', 'Pre Question', 'Post Question', 'What it Measures']);
   sheet.getRange(sheet.getLastRow(), 1, 1, 4).setFontWeight('bold');
-  sheet.appendRow(['AI Foundations', 'S01: AI "I think/believe"', 'S07: AI scores 90% on medical exam', 'Do they understand what AI actually is and isn\'t?']);
-  sheet.appendRow(['Prompt Engineering', 'S02: Vague climate essay', 'S08: Overly long responses', 'Can they write specific, constrained prompts?']);
-  sheet.appendRow(['Critical Evaluation', 'S03: AI citations', 'S09: Same answer 3 times', 'Do they verify AI output rather than trust appearances?']);
-  sheet.appendRow(['Ethics & Safety', 'S04: Customer emails in ChatGPT', 'S10: AI hiring bias', 'Do they recognize privacy and bias risks?']);
-  sheet.appendRow(['Human-AI Collaboration', 'S05: Project proposal workflow', 'S11: AI least helpful for learning', 'Can they lead the human-AI partnership effectively?']);
-  sheet.appendRow(['Tool Selection', 'S06: Extract from 50-page PDF', 'S12: Local vs cloud AI', 'Can they pick the right tool for the task?']);
+  sheet.appendRow(['AI Foundations', 'S01: Chatbot budget inconsistency', 'S07: Sales model deployment risk', 'Do they understand what AI actually is and isn\'t?']);
+  sheet.appendRow(['Prompt Engineering', 'S02: Donor email variants', 'S08: Policy summary to checklist', 'Can they write specific, constrained prompts?']);
+  sheet.appendRow(['Critical Evaluation', 'S03: Meeting transcript action items', 'S09: Repeated answer consistency', 'Do they verify AI output rather than trust appearances?']);
+  sheet.appendRow(['Ethics & Safety', 'S04: Nonprofit volunteer notes', 'S10: Hiring tool disparate impact', 'Do they recognize privacy and bias risks?']);
+  sheet.appendRow(['Human-AI Collaboration', 'S05: Grant proposal workflow', 'S11: Recursion learning strategies', 'Can they lead the human-AI partnership effectively?']);
+  sheet.appendRow(['Tool Selection', 'S06: 80 scanned invoices', 'S12: Clinic infrastructure constraints', 'Can they pick the right tool for the task?']);
   sheet.appendRow([]);
 
   sheet.appendRow(['PAIRING LOGIC']);
